@@ -41,19 +41,19 @@ You must have **Python 3.8 or higher** installed on your system.
 
 Once installed, you can run the tool using the `passgen` command from within the project's root directory.
 
-### 1. Generate a Password
+The `--list`, `-l`, `-L`  argument requires a path to the custom wordlist file (`--list path/to/custom/file/custom_file.txt`), default uses the eff_long_wordlist.txt file located in /src/passgen/wordlists, therefore it only needs to be used if you have your own wordlist.
 
-The `--list`, `-l`, `-L`  argument requires a path to the custom wordlist file (`--list path/to/custom/file/custom_file.txt`), default uses the eff_long_wordlist.txt file located in /src/passgen/wordlists.
+### 1. Generate a Password
 
 | Command | Description |
 | :--- | :--- |
 | `passgen -p` | Generates a 4-word passphrase (default). |
-| `passgen -p -w 6` | Generates a 6-word passphrase. |
+| `passgen -p -w X` | Generates a passphrase with X numbers of words. |
 
 **Example Output:**
 
-Generated Password: JacketGossipCarrotBreathe 
-Entropy: 51.58 bits
+Generated Password: SappyWakeRefineryVoucher
+Entropy: 51.70 bits
 
 
 ### 2. Generate a Username Only
@@ -62,11 +62,11 @@ Use the `--username`, `-u`, `-U` flag.
 
 | Command | Description |
 | :--- | :--- |
-| `passgen --username` | Generates a random username. |
+| `passgen -u` | Generates a random username. |
 
 **Example Output:**
 
-Username: FastCamel 
+Username: OYSTER_BARLEY55
 
 ### 3. Generate a Full Credential Set
 
@@ -74,14 +74,21 @@ Use the `--full`, `-f`, `-F` flag to generate both a password and a username.
 
 | Command | Description |
 | :--- | :--- |
-| `passgen --words 5 --full` | Generates a 5-word password and a username. |
+| `passgen -f` | Generates a 4-word password and a username. |
 
 **Example Output:**
 
-Username: FastCamel 
-Password: JacketGossipCarrotBreatheTree
-Entropy: 64.47 bits
+Username: confirmenactment317<br>Password: BlipWannabeAgnosticMatching<br>Entropy: 51.70 bits<br>
 
+The full command can be combined even further with other arguments such as:
+
+| Command | Description |
+| :--- | :--- |
+| `passgen -f -w 5 -u kebab` | Generates a 5-word password and a username stylized with kebab-case. |
+
+**Example Output:**
+
+Username: natural-shifting309<br>Password: AttemptSpriteRevolvingStarboardSwell<br>Entropy: 64.62 bits<br>
 
 ---
 
