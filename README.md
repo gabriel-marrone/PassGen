@@ -52,8 +52,7 @@ The `--list`, `-l`, `-L`  argument requires a path to the custom wordlist file (
 
 **Example Output:**
 
-Generated Password: SappyWakeRefineryVoucher
-Entropy: 51.70 bits
+Password: BlipWannabeAgnosticMatching<br>Entropy: 51.70 bits<br>
 
 
 ### 2. Generate a Username Only
