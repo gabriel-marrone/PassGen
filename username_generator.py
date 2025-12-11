@@ -8,6 +8,18 @@ class UsernameGenerator:
         roll = "".join(str(random.randint(1, 6)) for _ in range(5))
         return self.lookup.get(roll, "Word")
 
+    # Add all styles here
+    available_styles = [
+        "camel",
+        "pascal",
+        "lower",
+        "kebab",
+        "plain",
+        "upper",
+        "upper_plain",
+        "leet",
+    ]
+
     def _to_leet(self, word):
         table = {
             "a": "4", "e": "3", "i": "1", "o": "0",
@@ -16,20 +28,9 @@ class UsernameGenerator:
         return "".join(table.get(c.lower(), c) for c in word)
 
     def generate(self, words=2, add_number=True, style="random"):
-        # Add all styles here
-        available_styles = [
-            "camel",
-            "pascal",
-            "lower",
-            "kebab",
-            "plain",
-            "upper",
-            "upper_plain",
-            "leet",
-        ]
 
         if style == "random":
-            style = random.choice(available_styles)
+            style = random.choice(self.available_styles)
 
         picked = [self._roll_word() for _ in range(words)]
 
@@ -60,8 +61,7 @@ class UsernameGenerator:
             username = "".join(picked)
 
         else:
-            # Unknown style fallback
-            username = "".join(picked)
+            raise ValueError(f"Unknown style '{style}'")
 
         if add_number:
             username += str(random.randint(0, 999))

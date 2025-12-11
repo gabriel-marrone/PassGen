@@ -4,17 +4,52 @@ from diceware_generator import DicewareGenerator
 from username_generator import UsernameGenerator
 
 def main():
-    parser = argparse.ArgumentParser(description="DiceWare Entropy Generator")
-    parser.add_argument("-l", "--list", type=str, required=True,
-                        help="Path to wordlist file (EFF format, EX.: 12345 apple)")
-    parser.add_argument("-w", "--words", type=int, default=4,
-                        help="Number of words in the password.")
-    parser.add_argument("-u", "--username", action="store_true",
-                        help="Generates a random username using the wordlist provided")
-    parser.add_argument("-p", "--password", action="store_true",
-                        help="Generates a random password using the wordlist provided")
-    parser.add_argument("-f", "--full", action="store_true",
-                        help="Generates a full set of password and username")
+    parser = argparse.ArgumentParser(
+        description="PassGen - Credential Generator",
+        formatter_class=lambda prog: argparse.ArgumentDefaultsHelpFormatter(
+                prog, max_help_position=90, width=100
+            )
+        )
+
+    parser.add_argument(
+        "-l", "-L", "--list",
+        metavar="PATH",
+        required=True,
+        help="Path to a Diceware-formatted wordlist (e.g., EFF large wordlist)"
+    )
+
+    parser.add_argument(
+        "-w", "-W", "--words",
+        metavar="N",
+        type=int,
+        default=4,
+        help="Number of words to use when generating a password."
+    )
+
+    parser.add_argument(
+        "-u", "-U", "--username",
+        nargs="?",
+        const="random",
+        metavar="STYLE",
+        choices=["random", "camel", "pascal", "lower", "kebab", "upper", "upper_plain", "leet"],
+        default="random",
+        help=(
+            "Generate a username. Optionally choose a style:\n"
+            "  random, camel, pascal, lower, kebab, upper, upper_plain, leet "
+        )
+    )
+
+    parser.add_argument(
+        "-p", "-P", "--password",
+        action="store_true",
+        help="Generate a password using the provided wordlist."
+    )
+
+    parser.add_argument(
+        "-f", "-F", "--full",
+        action="store_true",
+        help="Generate a username + password pair.")
+
     args = parser.parse_args()
 
     # Loads wordlist
@@ -28,7 +63,7 @@ def main():
     # Full set of credentials
     if args.full:
         password, entropy = password_gen.generate_password(args.words)
-        username = username_gen.generate()
+        username = username_gen.generate(style=args.username)
 
         print("Username: ", username)
         print("Password: ", password)
@@ -37,7 +72,7 @@ def main():
 
     # Username only
     if args.username:
-        print("Generated Username: ", username_gen.generate())
+        print("Generated Username: ", username_gen.generate(style=args.username))
         return
 
     # Password only
