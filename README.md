@@ -2,6 +2,8 @@
 
 PassGen is a simple, secure, command-line tool for generating randomized credentials
 
+GUI version: [<https://github.com/gabriel-marrone/PassGen/tree/gui>](<https://github.com/gabriel-marrone/PassGen/tree/gui>)
+
 ## ✨ Features
 
 * **Diceware Passphrases:** Generates passphrases using a provided wordlist (like the EFF large wordlist).
@@ -22,7 +24,7 @@ You must have **Python 3.8 or higher** installed on your system.
 1.  **Clone the Repository:**
     Since the tool relies on the wordlist files being present in the repository, you must download the project files first.
     ```bash
-    git clone [https://github.com/gabriel-marrone/PassGen.git](https://github.com/gabriel-marrone/PassGen.git)
+    git clone https://github.com/gabriel-marrone/PassGen.git
     cd PassGen
     ```
 
