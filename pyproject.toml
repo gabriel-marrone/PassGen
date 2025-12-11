@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "passgen"
+version = "0.1.0"
+description = "Diceware-based credential generator with optional username styles."
+readme = "README.md"
+authors = [
+    { name = "Gabriel Marrone", email = "therealfeelz69@gmail.com" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = []
+
+# Expose CLI command: `passgen`
+[project.scripts]
+passgen = "passgen.main:main"
+
+# Include non-code files
+[tool.setuptools.package-data]
+passgen = [
+    "wordlists/*"
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+packages = ["passgen"]

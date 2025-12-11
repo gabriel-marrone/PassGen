@@ -1,7 +1,7 @@
 import argparse
-from wordlist_loader import WordlistLoader
-from diceware_generator import DicewareGenerator
-from username_generator import UsernameGenerator
+from passgen.wordlist_loader import WordlistLoader
+from passgen.diceware_generator import DicewareGenerator
+from passgen.username_generator import UsernameGenerator
 
 def main():
     parser = argparse.ArgumentParser(
@@ -12,14 +12,14 @@ def main():
         )
 
     parser.add_argument(
-        "-l", "-L", "--list",
+        "-l", "--list",
         metavar="PATH",
-        required=True,
+        required=False,
         help="Path to a Diceware-formatted wordlist (e.g., EFF large wordlist)"
     )
 
     parser.add_argument(
-        "-w", "-W", "--words",
+        "-w", "--words",
         metavar="N",
         type=int,
         default=4,
@@ -27,12 +27,12 @@ def main():
     )
 
     parser.add_argument(
-        "-u", "-U", "--username",
+        "-u", "--username",
         nargs="?",
         const="random",
         metavar="STYLE",
         choices=["random", "camel", "pascal", "lower", "kebab", "upper", "upper_plain", "leet"],
-        default="random",
+        default=None,
         help=(
             "Generate a username. Optionally choose a style:\n"
             "  random, camel, pascal, lower, kebab, upper, upper_plain, leet "
@@ -40,13 +40,13 @@ def main():
     )
 
     parser.add_argument(
-        "-p", "-P", "--password",
+        "-p", "--password",
         action="store_true",
         help="Generate a password using the provided wordlist."
     )
 
     parser.add_argument(
-        "-f", "-F", "--full",
+        "-f", "--full",
         action="store_true",
         help="Generate a username + password pair.")
 
@@ -63,7 +63,10 @@ def main():
     # Full set of credentials
     if args.full:
         password, entropy = password_gen.generate_password(args.words)
-        username = username_gen.generate(style=args.username)
+
+        style = args.username if args.username is not None else "random"
+
+        username = username_gen.generate(style=style)
 
         print("Username: ", username)
         print("Password: ", password)
