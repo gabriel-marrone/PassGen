@@ -1,11 +1,12 @@
 import customtkinter as ctk
-from wordlist_loader import WordlistLoader
-from diceware_generator import DicewareGenerator
-from username_generator import UsernameGenerator
+from .wordlist_loader import WordlistLoader
+from .diceware_generator import DicewareGenerator
+from .username_generator import UsernameGenerator
 
 import pyperclip
 import os
 
+DEFAULT_WORDLIST = os.path.join(os.path.dirname(__file__), "wordlists", "eff_large_wordlist.txt")
 
 class PasswordGUI(ctk.CTk):
     def __init__(self):
@@ -13,12 +14,12 @@ class PasswordGUI(ctk.CTk):
 
         self.title("PassGen - a credential generator")
         self.resizable(False, False)
-        self.geometry("420x550")
+        self.geometry("420x650")
 
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
 
-        # Placeholder until a file is chosen
+        # Hold the loaded lookup
         self.lookup = None
         self.wordlist_path = None
 
@@ -27,19 +28,35 @@ class PasswordGUI(ctk.CTk):
         """
 
         self.label_title = ctk.CTkLabel(
-            self, text="PassGen", font=("Segoe UI", 24)
+            self, text="PassGen", font=("Segoa UI", 24)
         )
         self.label_title.pack(pady=10)
 
-        # Wordlist picker
+        # Wordlist picker button
         self.btn_choose_list = ctk.CTkButton(
-            self, text="Choose Wordlist", command=self.choose_wordlist
+            self, text="Choose Wordlist",
+            command=self.choose_wordlist,
+            state="disabled"
         )
         self.btn_choose_list.pack(pady=5)
 
-        # Label that shows file chosen
-        self.label_list_name = ctk.CTkLabel(self, text="No wordlist loaded")
+        # Checkbox for custom wordlist
+        self.checkbox_var = ctk.BooleanVar(value=False)
+
+        self.checkbox_custom_list = ctk.CTkCheckBox(
+            self,
+            text="Enable custom wordlist",
+            variable=self.checkbox_var,
+            command=self.toggle_custom_wordlist
+        )
+        self.checkbox_custom_list.pack(pady=(0, 5))
+
+        # Label that shows which wordlist is currently loaded
+        self.label_list_name = ctk.CTkLabel(self, text="Loaded: default wordlist")
         self.label_list_name.pack(pady=5)
+
+        # Loads default list on startup
+        self.load_default_wordlist()
 
         # Username frame
         self.frame_user = ctk.CTkFrame(self, fg_color="transparent")
@@ -50,6 +67,33 @@ class PasswordGUI(ctk.CTk):
 
         self.entry_username = ctk.CTkEntry(self.frame_user, width=350, state="readonly")
         self.entry_username.pack()
+
+        self.username_style_var = ctk.StringVar(value="random")
+
+        self.label_username_style = ctk.CTkLabel(
+            self.frame_user,
+            text="Username Style:"
+        )
+        self.label_username_style.pack(anchor="w", pady=(4, 0))
+
+        self.combo_username_style = ctk.CTkComboBox(
+            self.frame_user,
+            variable=self.username_style_var,
+            values=[
+                "random",
+                "camel",
+                "pascal",
+                "lower",
+                "kebab",
+                "plain",
+                "upper",
+                "upper_plain",
+                "leet",
+            ],
+            state="readonly",
+            width=350
+        )
+        self.combo_username_style.pack(pady=(0, 4))
 
         # Password frame
         self.frame_pass = ctk.CTkFrame(self, fg_color="transparent")
@@ -104,6 +148,24 @@ class PasswordGUI(ctk.CTk):
         LOGIC
     """
 
+    def toggle_custom_wordlist(self):
+        """ If checkbox is on -> enables wordlist button, If checkbox is off -> uses default wordlist """
+        
+        if self.checkbox_var.get():
+            self.btn_choose_list.configure(state="normal")
+        else:
+            self.btn_choose_list.configure(state="disabled")
+            self.load_default_wordlist()
+    
+    def load_default_wordlist(self):
+        """ Loads the built-in EFF wordlist automatically """
+        self.wordlist_path = DEFAULT_WORDLIST
+        loader = WordlistLoader(DEFAULT_WORDLIST)
+        self.lookup = loader.load()
+        self.password_gen = DicewareGenerator(self.lookup)
+        self.username_gen = UsernameGenerator(self.lookup)
+        self.label_list_name.configure(text=f"Loaded: {os.path.basename(DEFAULT_WORDLIST)}")
+
     def ensure_loaded(self):
         if self.wordlist_path is None:
             self.label_list_name.configure(text="Load a wordlist first!")
@@ -115,8 +177,12 @@ class PasswordGUI(ctk.CTk):
             file picker dialog for the user to select a .txt wordlist.
         """
         from tkinter import filedialog
+        import platform
 
-        default_folder = os.path.join(os.path.dirname(__file__), "wordlists")
+        if platform.system() == "Windows":
+            default_folder = os.environ.get('USERPROFILE', 'C:\\')
+        else:
+            default_folder = os.path.expanduser("~")
 
         path = filedialog.askopenfilename(
             title="Select Wordlist",
@@ -143,7 +209,8 @@ class PasswordGUI(ctk.CTk):
         if not self.ensure_loaded():
             return
 
-        username = self.username_gen.generate()
+        username = self.username_gen.generate(style=self.username_style_var.get())
+
         self.entry_username.configure(state="normal")
         self.entry_username.delete(0, "end")
         self.entry_username.insert(0, username)
@@ -168,7 +235,7 @@ class PasswordGUI(ctk.CTk):
         if not self.ensure_loaded():
             return
 
-        username = self.username_gen.generate()
+        username = self.username_gen.generate(style=self.username_style_var.get())
         password, entropy = self.password_gen.generate_password(4)
 
         self.entry_username.configure(state="normal")
@@ -191,8 +258,6 @@ class PasswordGUI(ctk.CTk):
 
     def copy_password(self):
         pyperclip.copy(self.entry_password.get())
-
-
 if __name__ == "__main__":
     app = PasswordGUI()
     app.mainloop()

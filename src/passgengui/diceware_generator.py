@@ -1,5 +1,5 @@
 import math
-from utils import roll_die_digit, make_camel_case
+from .utils import roll_die_digit, make_camel_case
 
 class DicewareGenerator:
     def __init__(self, lookup):
