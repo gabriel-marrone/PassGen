@@ -2,15 +2,33 @@ import customtkinter as ctk
 from .wordlist_loader import WordlistLoader
 from .diceware_generator import DicewareGenerator
 from .username_generator import UsernameGenerator
+from PIL import Image
 
 import pyperclip
 import os
+import sys
 
 DEFAULT_WORDLIST = os.path.join(os.path.dirname(__file__), "wordlists", "eff_large_wordlist.txt")
 
 class PasswordGUI(ctk.CTk):
     def __init__(self):
         super().__init__()
+
+        base_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icons")
+        )
+
+        if sys.platform.startswith("win"):
+            self.iconbitmap(os.path.join(base_dir, "icon.ico"))
+
+        elif sys.platform.startswith("linux"):
+            img = Image.open(os.path.join(base_dir, "icon.png"))
+            self.iconphoto(True, ctk.CTkImage(light_image=img, dark_image=img).image)
+
+        elif sys.platform == "darwin":
+            img = Image.open(os.path.join(base_dir, "icon.png"))
+            self.iconphoto(True, ctk.CTkImage(light_image=img, dark_image=img).image)
+            
 
         self.title("PassGen - a credential generator")
         self.resizable(False, False)
@@ -62,7 +80,7 @@ class PasswordGUI(ctk.CTk):
         self.frame_user = ctk.CTkFrame(self, fg_color="transparent")
         self.frame_user.pack(pady=5)
 
-        self.label_username = ctk.CTkLabel(self.frame_user, text="Username:")
+        self.label_username = ctk.CTkLabel(self.frame_user, text="Generated Username:")
         self.label_username.pack(anchor="w")
 
         self.entry_username = ctk.CTkEntry(self.frame_user, width=350, state="readonly")
@@ -99,7 +117,7 @@ class PasswordGUI(ctk.CTk):
         self.frame_pass = ctk.CTkFrame(self, fg_color="transparent")
         self.frame_pass.pack(pady=5)
 
-        self.label_password = ctk.CTkLabel(self.frame_pass, text="Password:")
+        self.label_password = ctk.CTkLabel(self.frame_pass, text="Generated Password:")
         self.label_password.pack(anchor="w")
 
         self.entry_password = ctk.CTkEntry(self.frame_pass, width=350, state="readonly")
