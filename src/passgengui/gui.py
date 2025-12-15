@@ -14,7 +14,7 @@ class PasswordGUI(ctk.CTk):
 
         self.title("PassGen - a credential generator")
         self.resizable(False, False)
-        self.geometry("420x650")
+        self.geometry("420x710")
 
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
@@ -104,6 +104,17 @@ class PasswordGUI(ctk.CTk):
 
         self.entry_password = ctk.CTkEntry(self.frame_pass, width=350, state="readonly")
         self.entry_password.pack()
+
+        # Password length frame
+        self.frame_length = ctk.CTkFrame(self, fg_color="transparent")
+        self.frame_length.pack(pady=5)
+
+        self.label_length = ctk.CTkLabel(self.frame_length, text="Password Length:")
+        self.label_length.pack(anchor="w")
+
+        self.entry_length = ctk.CTkEntry(self.frame_length, width=350)
+        self.entry_length.insert(0, "4")  # Default length
+        self.entry_length.pack()
 
         # Entropy frame
         self.frame_entropy = ctk.CTkFrame(self, fg_color="transparent")
@@ -220,7 +231,15 @@ class PasswordGUI(ctk.CTk):
         if not self.ensure_loaded():
             return
 
-        password, entropy = self.password_gen.generate_password(4)
+        # Custom length text box logic
+        try:
+            length = int(self.entry_length.get())
+        except ValueError:
+            self.entry_length.delete(0, "end")
+            self.entry_length.insert(0, "4")
+            length = 4 # Default if input is invalid
+
+        password, entropy = self.password_gen.generate_password(length)
         self.entry_password.configure(state="normal")
         self.entry_password.delete(0, "end")
         self.entry_password.insert(0, password)
@@ -236,7 +255,16 @@ class PasswordGUI(ctk.CTk):
             return
 
         username = self.username_gen.generate(style=self.username_style_var.get())
-        password, entropy = self.password_gen.generate_password(4)
+
+        # Custom length text box logic
+        try:
+            length = int(self.entry_length.get())
+        except ValueError:
+            self.entry_length.delete(0, "end")
+            self.entry_length.insert(0, "4")
+            length = 4 # Default if input is invalid
+
+        password, entropy = self.password_gen.generate_password(length)
 
         self.entry_username.configure(state="normal")
         self.entry_username.delete(0, "end")
