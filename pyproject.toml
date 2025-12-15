@@ -12,7 +12,10 @@ authors = [
 ]
 license = { text = "MIT" }
 requires-python = ">=3.8"
-dependencies = []
+dependencies = [
+    "customtkinter",
+    "pyperclip"
+]
 
 # Expose CLI command: `passgen`
 [project.scripts]
