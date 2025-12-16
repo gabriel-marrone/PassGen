@@ -18,18 +18,6 @@ class PasswordGUI(ctk.CTk):
             os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icons")
         )
 
-        if sys.platform.startswith("win"):
-            self.iconbitmap(os.path.join(base_dir, "icon.ico"))
-
-        elif sys.platform.startswith("linux"):
-            img = Image.open(os.path.join(base_dir, "icon.png"))
-            self.iconphoto(True, ctk.CTkImage(light_image=img, dark_image=img).image)
-
-        elif sys.platform == "darwin":
-            img = Image.open(os.path.join(base_dir, "icon.png"))
-            self.iconphoto(True, ctk.CTkImage(light_image=img, dark_image=img).image)
-            
-
         self.title("PassGen - a credential generator")
         self.resizable(False, False)
         self.geometry("420x710")
@@ -46,7 +34,7 @@ class PasswordGUI(ctk.CTk):
         """
 
         self.label_title = ctk.CTkLabel(
-            self, text="PassGen", font=("Segoa UI", 24)
+            self, text="PassGen", font=("Segoe UI", 24)
         )
         self.label_title.pack(pady=10)
 
@@ -304,6 +292,10 @@ class PasswordGUI(ctk.CTk):
 
     def copy_password(self):
         pyperclip.copy(self.entry_password.get())
-if __name__ == "__main__":
+
+def run():
     app = PasswordGUI()
     app.mainloop()
+
+if __name__ == "__main__":
+    run()
